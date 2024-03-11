@@ -1,78 +1,77 @@
-const firebase = require('firebase');
-require('firebase/firestore');
+import * as firebase from 'firebase'
+import * as firestore from 'firebase/firestore'
 
 export class Firebase {
 
-    constructor(){
+    constructor() {
 
-        this._config = {
-            apiKey: "AIzaSyC6BhrG8oLAmM0Mkkmy64DzfWkTOqZy0lg",
-            authDomain: "whatsapp-clone-e233a.firebaseapp.com",
-            projectId: "whatsapp-clone-e233a",
-            storageBucket: "whatsapp-clone-e233a.appspot.com",
-            messagingSenderId: "546388936254",
-            appId: "1:546388936254:web:bb185e8f75e2d17116f36f",
-            measurementId: "G-08XGZR65CQ"
-        };
-        
-        
         this.init();
-        
-    }
-    
-    init() {
 
-        if (!this._initialized) {
-            
-            firebase.initializeApp(this._config);
+    }
+
+    init(){
+
+        if (!window._initializedFirebase) {
+
+            firebase.initializeApp({
+                // apiKey: "AIzaSyC6BhrG8oLAmM0Mkkmy64DzfWkTOqZy0lg",
+                // authDomain: "whatsapp-clone-e233a.firebaseapp.com",
+                // projectId: "whatsapp-clone-e233a",
+                // storageBucket: "whatsapp-clone-e233a.appspot.com",
+                // messagingSenderId: "546388936254",
+                // appId: "1:546388936254:web:bb185e8f75e2d17116f36f",
+                // measurementId: "G-08XGZR65CQ",
+                apiKey: "AIzaSyBV9RS4oWa-MFWg7A24uB97xaD_lF3Hfq0",
+                authDomain: "clone-whatsapp-saulo.firebaseapp.com",
+                projectId: "clone-whatsapp-saulo",
+                storageBucket: "clone-whatsapp-saulo.appspot.com",
+                messagingSenderId: "44005206388",
+                appId: "1:44005206388:web:3ea167c27296b00a906421",
+            });
 
             firebase.firestore().settings({
                 timestampsInSnapshots: true
             });
 
-            this._initialized = true;
+            window._initializedFirebase = true;
 
         }
-    
-    }
-
-    static db() {
-
-        return firebase.firestore();
 
     }
-    
-    static hd() {
 
-        return firebase.storage();
-    }
+    initAuth(){
 
-    initAuth() {
-
-        return new Promise((s, f)=>{
+        return new Promise((resolve, reject)=>{
 
             let provider = new firebase.auth.GoogleAuthProvider();
 
-            firebase.auth().signInWithPopup(provider).
-            then(result => {
+            firebase.auth().signInWithPopup(provider).then(function (result) {
 
                 let token = result.credential.accessToken;
                 let user = result.user;
 
-                s({
-                    user,
-                    token
-                });
+                resolve(user, token);
 
-                console.log();
+            }).catch(function (error) {
 
+                reject(error);
 
-            }).catch(err=>{
-                f(err)
             });
 
-        });
+        });        
 
     }
-}
 
+    static db(){
+
+        return firebase.firestore();
+
+    }
+
+    static hd() {
+
+        return firebase.storage();
+
+    }
+
+}
